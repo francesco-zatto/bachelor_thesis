@@ -1,8 +1,9 @@
 #define RECEPTOR_SIZE 2
+#define UNDEFINED -1
 
-enum Type {B, T, Ag, Ab, Free};
+typedef enum {B, T, Ag, Ab, Free} Type;
 
-enum Status {Inactive, Active, Operative};
+typedef enum {Inactive, Active, Operative} Status;
 
 typedef struct {
     float x;
