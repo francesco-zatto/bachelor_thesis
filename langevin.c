@@ -73,13 +73,9 @@ void update_cell_Langevin(Cell* cell)
 
 void box_muller()
 {
-    float box_muller_random[2];
-    for (int i = 0; i < 2; i++) {
-        box_muller_random[i] = (float)rand()/(float)(RAND_MAX);
-    }
     float 
-        u1 = box_muller_random[0],
-        u2 = box_muller_random[1];
+        u1 = (float)rand()/(float)(RAND_MAX),
+        u2 = (float)rand()/(float)(RAND_MAX);
     box_muller_number[0] = sqrt(-2 * log(u1)) * cos(2 * PI * u2);
     box_muller_number[1] = sqrt(-2 * log(u1)) * sin(2 * PI * u2);
 }
