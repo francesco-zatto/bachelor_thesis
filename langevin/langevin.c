@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "cell.h"
+#include "../cell.h"
 
 /**
  * Fluid viscosity. It slows down the cell's movement in the fluid.
@@ -13,12 +13,17 @@
 /**
  * Mass of the cell. Depending on it, the cell gains more or less velocity.
  */
-#define MASS 0.1
+#define MASS 10
 
 /**
  * Size of each misuration timestep
  */
 #define TIMESTEP 1
+
+/**
+ * Number of iterations of the Langevin equation simulation.
+ */
+#define ITERATIONS 100
 
 #define PI 3.14159265358979323846
 
@@ -38,9 +43,15 @@ void update_cell_Langevin(Cell* cell);
  */
 void box_muller();
 
+/**
+ * It save cell positions in an external file.
+ */
+void save_positions(Vector positions[ITERATIONS]);
+
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
+    Vector positions[ITERATIONS];
     Cell cell = {
         .velocity = {
             .x = 0.1,
@@ -51,10 +62,12 @@ int main(int argc, char const *argv[])
             .y = 100
         }
     };
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < ITERATIONS; i++) {
         update_cell_Langevin(&cell);
-        printf("x: %f \t y: %f \n", cell.position.x, cell.position.y);
+        positions[i] = cell.position;
     }
+
+    save_positions(positions);
     return 0;
 }
 
@@ -78,4 +91,13 @@ void box_muller()
         u2 = (float)rand()/(float)(RAND_MAX);
     box_muller_number[0] = sqrt(-2 * log(u1)) * cos(2 * PI * u2);
     box_muller_number[1] = sqrt(-2 * log(u1)) * sin(2 * PI * u2);
+}
+
+void save_positions(Vector positions[ITERATIONS]) 
+{
+    FILE* file = fopen("data.csv", "w");
+    for (int i = 0; i < ITERATIONS; i++) {
+        fprintf(file, "%f;%f\n", positions[i].x, positions[i].y);
+    }
+    fclose(file);
 }
