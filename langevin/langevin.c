@@ -13,7 +13,7 @@
 /**
  * Mass of the cell. Depending on it, the cell gains more or less velocity.
  */
-#define MASS 100
+#define MASS 1
 
 /**
  * Size of each misuration timestep
