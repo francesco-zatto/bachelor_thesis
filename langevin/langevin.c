@@ -98,6 +98,7 @@ void box_muller(float box_muller_number[2])
 void save_positions(Vector positions[ITERATIONS]) 
 {
     FILE* file = fopen("data.csv", "w");
+    fprintf(file, "x0;y0;\n");
     for (int i = 0; i < ITERATIONS; i++) 
     {
         fprintf(file, "%f;%f\n", positions[i].x, positions[i].y);

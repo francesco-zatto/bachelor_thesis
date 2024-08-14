@@ -115,8 +115,7 @@ void save_positions(Vector* positions, int n)
 {
     FILE* file = fopen("data.csv", "w");
     for (int i = 0; i < n; i++) {
-        fprintf(file, "x%d;", i);
-        fprintf(file, "y%d;", i);
+        fprintf(file, "x%d;y%d;", i, i);
     }
     fprintf(file, "\n");
     for (int i = 0; i < ITERATIONS; i++) 
