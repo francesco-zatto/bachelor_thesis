@@ -28,7 +28,7 @@
 /**
  * Number of iterations of the Langevin equation simulation.
  */
-#define ITERATIONS 1000
+#define ITERATIONS 100000
 
 #define PI 3.14159265358979323846
 
@@ -58,6 +58,12 @@ void box_muller(float box_muller_numeber[2]);
  */
 void save_positions(Vector* positions, int n);
 
+/**
+ * It checks if given position is correct, i.e. it is inside the grid.
+ * @param position cell position to check
+ */
+void check_position(Vector* position);
+
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
@@ -66,6 +72,11 @@ int main(int argc, char const *argv[])
         cells_number = atoi(argv[1]);
     }
     Cell* cells = calloc(cells_number, sizeof(Cell));
+    for (int i = 0; i < cells_number; i++)
+    {
+        cells[i].position.x = rand() % SIZE;
+        cells[i].position.y = rand() % SIZE;
+    }
     Vector* positions = malloc(sizeof(Vector) * cells_number * ITERATIONS);
     for (int i = 0; i < ITERATIONS; i++) 
     {
@@ -97,6 +108,26 @@ void update_cell_Langevin(Cell* cells, int n)
         cells[i].velocity.y += delta_velocity.y;
         cells[i].position.x += round(cells[i].velocity.x * TIMESTEP);
         cells[i].position.y += round(cells[i].velocity.y * TIMESTEP);
+        check_position(&cells[i].position);
+    }
+}
+
+void check_position(Vector* position) {
+    if (position->x >= SIZE)
+    {
+        position->x -= SIZE;
+    }
+    if (position->x < 0)
+    {
+        position->x = SIZE - position->x;
+    }
+    if (position->y >= SIZE)
+    {
+        position->y -= SIZE;
+    }
+    if (position->y < 0)
+    {
+        position->y = SIZE - position->y;
     }
 }
 
