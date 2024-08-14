@@ -8,17 +8,22 @@
 /**
  * Fluid viscosity. It slows down the cell's movement in the fluid.
  */
-#define LAMBDA 10
+#define LAMBDA 0.1
 
 /**
  * Mass of the cell. Depending on it, the cell gains more or less velocity.
  */
-#define MASS 1
+#define MASS 0.02
 
 /**
- * Size of each misuration timestep
+ * Size of each misuration timestep.
  */
-#define TIMESTEP 1
+#define TIMESTEP 0.1
+
+/**
+ * Size of grid size.
+ */
+#define SIZE 2000
 
 /**
  * Number of iterations of the Langevin equation simulation.
@@ -60,14 +65,16 @@ int main(int argc, char const *argv[])
     {
         cells_number = atoi(argv[1]);
     }
-    Cell* cells = malloc(sizeof(Cell) * cells_number);
+    Cell* cells = calloc(cells_number, sizeof(Cell));
     Vector* positions = malloc(sizeof(Vector) * cells_number * ITERATIONS);
     for (int i = 0; i < ITERATIONS; i++) 
     {
         update_cell_Langevin(cells, cells_number);
         for (int j = 0; j < cells_number; j++) 
         {
-            positions[i * ITERATIONS + j] = cells[j].position;
+            positions[i * cells_number + j] = cells[j].position;
+            //printf("%f\t%f\n", cells[j].velocity.x, cells[j].velocity.y);
+            printf("%f\t%f\n", positions[i * cells_number + j].x, positions[i * cells_number + j].y);
         }
     }
 
@@ -90,8 +97,8 @@ void update_cell_Langevin(Cell* cells, int n)
         };
         cells[i].velocity.x += delta_velocity.x;
         cells[i].velocity.y += delta_velocity.y;
-        cells[i].position.x += cells[i].velocity.x * TIMESTEP;
-        cells[i].position.y += cells[i].velocity.y * TIMESTEP;
+        cells[i].position.x += round(cells[i].velocity.x * TIMESTEP);
+        cells[i].position.y += round(cells[i].velocity.y * TIMESTEP);
     }
 }
 
@@ -111,7 +118,7 @@ void save_positions(Vector* positions, int n)
     {
         for (int j = 0; j < n; j++) 
         {
-            fprintf(file, "%f;%f;", positions[i * ITERATIONS + j].x, positions[i * ITERATIONS + j].y);
+            fprintf(file, "%f;%f;", positions[i * cells_number + j].x, positions[i * cells_number + j].y);
         }
         fprintf(file, "\n");
     }
