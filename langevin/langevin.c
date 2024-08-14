@@ -48,17 +48,21 @@ int main(int argc, char const *argv[])
 {
     srand(time(NULL));
     Vector positions[ITERATIONS];
-    Cell cell = {
-        .velocity = {
+    Cell cell = 
+    {
+        .velocity = 
+        {
             .x = 0,
             .y = 0
         },
-        .position = {
+        .position = 
+        {
             .x = 0,
             .y = 0
         }
     };
-    for (int i = 0; i < ITERATIONS; i++) {
+    for (int i = 0; i < ITERATIONS; i++) 
+    {
         update_cell_Langevin(&cell);
         positions[i] = cell.position;
     }
@@ -71,7 +75,8 @@ void update_cell_Langevin(Cell* cell)
 {
     float box_muller_number[2];
     box_muller(box_muller_number);
-    Vector delta_velocity = {
+    Vector delta_velocity = 
+    {
         .x = (-LAMBDA * cell->velocity.x + box_muller_number[0]) / MASS * TIMESTEP,
         .y = (-LAMBDA * cell->velocity.y + box_muller_number[1]) / MASS * TIMESTEP
     };
@@ -93,7 +98,8 @@ void box_muller(float box_muller_number[2])
 void save_positions(Vector positions[ITERATIONS]) 
 {
     FILE* file = fopen("data.csv", "w");
-    for (int i = 0; i < ITERATIONS; i++) {
+    for (int i = 0; i < ITERATIONS; i++) 
+    {
         fprintf(file, "%f;%f\n", positions[i].x, positions[i].y);
     }
     fclose(file);
