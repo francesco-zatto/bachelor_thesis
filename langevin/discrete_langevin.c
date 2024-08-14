@@ -13,7 +13,7 @@
 /**
  * Mass of the cell. Depending on it, the cell gains more or less velocity.
  */
-#define MASS 2
+#define MASS 0.08
 
 /**
  * Size of each misuration timestep.
@@ -73,8 +73,6 @@ int main(int argc, char const *argv[])
         for (int j = 0; j < cells_number; j++) 
         {
             positions[i * cells_number + j] = cells[j].position;
-            //printf("%f\t%f\n", cells[j].velocity.x, cells[j].velocity.y);
-            //printf("%f\t%f\n", positions[i * cells_number + j].x, positions[i * cells_number + j].y);
         }
     }
 
@@ -90,7 +88,6 @@ void update_cell_Langevin(Cell* cells, int n)
     for (int i = 0; i < n; i++) 
     {
         box_muller(box_muller_number);
-        //printf("%f\t%f\n", box_muller_number[0], box_muller_number[1]);
         Vector delta_velocity = 
         {
             .x = (-LAMBDA * cells[i].velocity.x + box_muller_number[0]) / MASS * TIMESTEP,
