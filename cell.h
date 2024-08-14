@@ -10,8 +10,7 @@ typedef struct {
     float y;
 } Vector;
 
-typedef struct 
-{
+typedef struct {
     Type type;
     Vector position;
     Vector velocity;

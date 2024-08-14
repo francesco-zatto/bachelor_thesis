@@ -13,12 +13,12 @@
 /**
  * Mass of the cell. Depending on it, the cell gains more or less velocity.
  */
-#define MASS 0.02
+#define MASS 2
 
 /**
  * Size of each misuration timestep.
  */
-#define TIMESTEP 0.1
+#define TIMESTEP 0.2
 
 /**
  * Size of grid size.
@@ -87,9 +87,9 @@ int main(int argc, char const *argv[])
 void update_cell_Langevin(Cell* cells, int n) 
 {
     float box_muller_number[2];
-    box_muller(box_muller_number);
     for (int i = 0; i < n; i++) 
     {
+        box_muller(box_muller_number);
         Vector delta_velocity = 
         {
             .x = (-LAMBDA * cells[i].velocity.x + box_muller_number[0]) / MASS * TIMESTEP,
@@ -114,6 +114,11 @@ void box_muller(float box_muller_number[2])
 void save_positions(Vector* positions, int n) 
 {
     FILE* file = fopen("data.csv", "w");
+    for (int i = 0; i < n; i++) {
+        fprintf(file, "x%d;", i);
+        fprintf(file, "y%d;", i);
+    }
+    fprintf(file, "\n");
     for (int i = 0; i < ITERATIONS; i++) 
     {
         for (int j = 0; j < n; j++) 
