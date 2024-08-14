@@ -1,5 +1,5 @@
 all:
-	gcc langevin.c -o langevin -lm
+	gcc langevin.c -o exe/langevin -lm
 
 discrete:
-	gcc discrete_langevin.c -o discrete_langevin -lm
+	gcc discrete_langevin.c -o exe/discrete_langevin -lm
