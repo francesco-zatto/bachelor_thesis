@@ -48,6 +48,13 @@ void create_cell(Cell* cell, Type type);
  */
 bool compare_positions(Vector a, Vector b);
 
+/**
+ * It save cells positions in an external file.
+ * @param positions positions taken by cells inside the grid
+ * @param n number of cells in the simulation
+ */
+void save_positions(Vector* positions, int n);
+
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
@@ -69,6 +76,14 @@ int main(int argc, char const *argv[])
 
     generation(cells, options);
 
+    Vector* positions = calloc(options.total_number_cells, sizeof(Vector));
+    for (int i = 0; i < options.total_number_cells; i++)
+    {
+        positions[i] = cells[i].position;
+    }
+    save_positions(positions, options.total_number_cells);
+
+    free(positions);
     free(cells);
     return 0;
 }
@@ -120,4 +135,19 @@ void create_cell(Cell* cell, Type type)
 bool inline compare_positions(Vector a, Vector b)
 {
     return a.x == b.x && a.y == b.y;
+}
+
+void save_positions(Vector* positions, int n) 
+{
+    FILE* file = fopen("start.csv", "w");
+    for (int i = 0; i < n; i++) {
+        fprintf(file, "x%d;y%d;", i, i);
+    }
+    fprintf(file, "\n");
+    for (int i = 0; i < n; i++) 
+    {
+        fprintf(file, "%f;%f;", positions[i].x, positions[i].y);
+    }
+    fprintf(file, "\n");
+    fclose(file);
 }
