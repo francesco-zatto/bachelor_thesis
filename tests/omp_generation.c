@@ -140,13 +140,10 @@ bool inline compare_positions(Vector a, Vector b)
 void save_positions(Vector* positions, int n) 
 {
     FILE* file = fopen("start.csv", "w");
-    for (int i = 0; i < n; i++) {
-        fprintf(file, "x%d;y%d;", i, i);
-    }
     fprintf(file, "\n");
     for (int i = 0; i < n; i++) 
     {
-        fprintf(file, "%f;%f;", positions[i].x, positions[i].y);
+        fprintf(file, "%f;%f;\n", positions[i].x, positions[i].y);
     }
     fprintf(file, "\n");
     fclose(file);
