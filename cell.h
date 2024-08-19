@@ -15,6 +15,13 @@ typedef struct {
     Vector position;
     Vector velocity;
     Status status;
-    char receptor[RECEPTOR_SIZE];
+    unsigned char receptor[RECEPTOR_SIZE];
     void (*action)(void*);
 } Cell;
+
+typedef struct {
+    int total_number_cells;
+    int cells_B_number;
+    int cells_T_number;
+    int ag_number;
+} Options;
