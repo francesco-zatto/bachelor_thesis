@@ -28,7 +28,7 @@
 /**
  * Number of iterations of the Langevin equation simulation.
  */
-#define ITERATIONS 100000
+#define ITERATIONS 80000
 
 #define PI 3.14159265358979323846
 
