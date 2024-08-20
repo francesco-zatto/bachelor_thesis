@@ -9,3 +9,6 @@ discrete:
 
 run-discrete:
 	./exe/discrete_langevin
+
+clear:
+	-rm ./exe/*

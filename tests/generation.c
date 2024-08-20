@@ -15,17 +15,17 @@
 /**
  * Default number of B lymphocytes of the simulation.
  */
-int cells_B_number = 100;
+int cells_B_number = 1000;
 
 /**
  * Default number of T helper lymphocytes of the simulation.
  */
-int cells_T_number = 100;
+int cells_T_number = 1000;
 
 /**
  * Default number of antigens of the simulation.
  */
-int ag_number = 500;
+int ag_number = 5000;
 
 /**
  * Generation process of the simulation cells given the options.
