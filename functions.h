@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "../cell.h"
+#include "cell.h"
 
 
 /**

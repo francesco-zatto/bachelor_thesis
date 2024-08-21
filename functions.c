@@ -1,4 +1,4 @@
-#include "../cell.h"
+#include "cell.h"
 #include "functions.h"
 #include <stdlib.h>
 #include <stdio.h>
