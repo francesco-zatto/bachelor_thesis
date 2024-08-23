@@ -11,7 +11,22 @@
  * @param position position (x, y) of the requested cell
  * @returns a pointer to a cell
  */
-inline Cell* access_grid(Cell* grid, Vector position);
+Cell* access_grid(Cell* grid, Vector position);
+
+/**
+ * It creates a duplicate in a certain position of a given B lymphocyte.
+ * @param old_cell B cell to duplicate
+ * @param duplicate duplicate cell to return as output parameter
+ * @param position position to place the new duplicate
+ */
+void create_duplicate(Cell old_cell, Cell* duplicate, Vector position);
+
+/**
+ * It copies the value of a receptor in another. It can be used in cell duplication.
+ * @param new_receptor char array as output parameter
+ * @param old_receptor char array as input parameter
+ */
+void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_receptor[RECEPTOR_SIZE]);
 
 /**
  * Action made by a B lymphocyte every timestep. Depending on its status, it checks the presence of

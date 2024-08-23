@@ -22,7 +22,7 @@ typedef struct Cell {
     Vector velocity;
     Status status;
     unsigned char receptor[RECEPTOR_SIZE];
-    void (*action)(struct Cell*, struct Cell*);
+    void (*action)(struct Cell*, struct Cell*, struct Cell*);
 } Cell;
 
 typedef struct {

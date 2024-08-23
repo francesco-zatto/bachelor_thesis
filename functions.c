@@ -1,6 +1,8 @@
 #include "cell.h"
 #include "functions.h"
 
+#include <stdio.h>
+
 inline Cell* access_grid(Cell* grid, Vector position)
 {
     return &grid[(int)position.x * SIZE + (int)(position).y];
@@ -121,18 +123,29 @@ void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid)
             Cell* free_cell = access_grid(old_grid, new_position);
             if (free_cell->type == FREE)
             {
-                Cell new_cell = 
-                {
-                    .action = cell->action,
-                    .receptor = cell->receptor,
-                    .status = INACTIVE,
-                    .velocity = {0, 0},
-                    .position = new_position
-                };
-                *free_cell = new_cell;
+                create_duplicate(*cell, free_cell, new_position);
                 duplicated = true;
             }
         }
+    }
+}
+
+void create_duplicate(Cell old_cell, Cell* duplicate, Vector position)
+{
+    duplicate->action = old_cell.action;
+    duplicate->type = old_cell.type;
+    duplicate->status = INACTIVE;
+    duplicate->velocity.x = 0;
+    duplicate->velocity.y = 0;
+    duplicate->position = position;
+    copy_receptor(duplicate->receptor, old_cell.receptor);
+}
+
+void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_receptor[RECEPTOR_SIZE])
+{
+    for (int i = 0; i < RECEPTOR_SIZE; i++)
+    {
+        new_receptor[i] = old_receptor[i];
     }
 }
 
