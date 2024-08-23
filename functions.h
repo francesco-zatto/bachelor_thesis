@@ -22,6 +22,15 @@ Cell* access_grid(Cell* grid, Vector position);
 void create_duplicate(Cell old_cell, Cell* duplicate, Vector position);
 
 /**
+ * It creates an antibody when a B cell is operative and ready to create them.
+ * @param B_cell B lymphocyte that creates antigens
+ * @param antibody antibody to return as output parameter
+ * @param position position to place the new antibody
+ */
+void create_antibody(Cell B_cell, Cell* antigen, Vector position);
+
+
+/**
  * It copies the value of a receptor in another. It can be used in cell duplication.
  * @param new_receptor char array as output parameter
  * @param old_receptor char array as input parameter
@@ -40,9 +49,10 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
 /**
  * Action made by an inactive B lymphocyte or an antibody to search for antigens nearby.
  * @param cell this lymphocyte or this antibody that calls the action
- * @param grid grid where the cells are moving
+ * @param old_grid grid where the cells are moving in this timestep
+ * @param new_grid grif where the cells will move in next timestep
  */
-void search_antigens(Cell* cell, Cell* grid);
+void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid);
 
 /**
  * It corrects a position that could be outside the grid.

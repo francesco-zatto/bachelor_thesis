@@ -14,7 +14,7 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
     {
         case INACTIVE: 
         {
-            search_antigens(b, old_grid);
+            search_antigens(b, old_grid, new_grid);
             break;
         }
         case OPERATIVE:
@@ -26,7 +26,7 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
     }
 }
 
-void search_antigens(Cell* cell, Cell* grid)
+void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -38,7 +38,7 @@ void search_antigens(Cell* cell, Cell* grid)
                 .y = cell->position.y + j 
             };
             correct_position(&current_position);
-            Cell* other = access_grid(grid, current_position);
+            Cell* other = access_grid(old_grid, current_position);
             if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
@@ -98,7 +98,7 @@ void find_antigen(Cell* cell, Cell* other)
             cell->status = ACTIVE;
             break;
         }
-        case Ag:
+        case Ab:
         {
             other->type = FREE;
             break;
@@ -151,7 +151,35 @@ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_
 
 void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid)
 {
+    int created = 0;
+    for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && created < NUMBER_CREATED_ANTIGENS; i++)
+    {
+        for (int j = -PROXIMITY_DISTANCE; j <= PROXIMITY_DISTANCE && created < NUMBER_CREATED_ANTIGENS; j++) 
+        {
+            Vector new_position = 
+            {
+                .x = cell->position.x + i,
+                .y = cell->position.y + j
+            };
+            correct_position(&new_position);
+            Cell* free_cell = access_grid(old_grid, new_position);
+            if (free_cell->type == FREE)
+            {
+                create_antibody(*cell, free_cell, new_position);
+                created++;
+            }
+        }
+    }
+}
 
+void create_antibody(Cell B_cell, Cell* antigen, Vector position)
+{
+    antigen->action = search_antigens;
+    antigen->type = Ab;
+    antigen->velocity.x = 0;
+    antigen->velocity.y = 0;
+    antigen->position = position;
+    copy_receptor(antigen->receptor, B_cell.receptor);
 }
 
 
