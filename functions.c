@@ -1,42 +1,24 @@
 #include "cell.h"
 #include "functions.h"
-#include <stdlib.h>
-#include <stdio.h>
 
-int main(int argc, char const *argv[])
+inline Cell* access_grid(Cell* grid, Vector position)
 {
-    Cell* b = malloc(sizeof(Cell));
-    b->action = lympho_B_action;
-    b->type = B;
-    b->receptor[0] = 0x0f, b->receptor[1] = 0xf;
-    printf("%x %x\n", b->receptor[0] & 0xff, b->receptor[1] & 0xff);
-    Cell* ag = malloc(sizeof(Cell));
-    ag->type = Ag;
-    ag->receptor[0] = 0xff, ag->receptor[1] = 0xff;
-    printf("%x %x\n", ag->receptor[0] & 0xff, ag->receptor[1] & 0xff);
-    printf("%d\n", hamming_distance(b->receptor, ag->receptor));
-    printf("%d\n", is_matching_antigen(*b, *ag));
-    free(b);
-    free(ag);
-    return 0;
+    return &grid[(int)position.x * SIZE + (int)(position).y];
 }
 
-
-void lympho_B_action(Cell* b, Cell* grid)
+void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
 {
     switch (b->status)
     {
         case INACTIVE: 
         {
-            search_antigens(b, grid);
-            break;
-        }
-        case ACTIVE: 
-        {
+            search_antigens(b, old_grid);
             break;
         }
         case OPERATIVE:
         {
+            duplicate(b, old_grid, new_grid);
+            create_antibodies(b, old_grid, new_grid);
             break;
         }
     }
@@ -51,10 +33,10 @@ void search_antigens(Cell* cell, Cell* grid)
             Vector current_position = 
             {
                 .x = cell->position.x + i,
-                .y = cell->position.x + j 
+                .y = cell->position.y + j 
             };
             correct_position(&current_position);
-            Cell* other = &grid[(int)current_position.x * SIZE + (int)(current_position).y];
+            Cell* other = access_grid(grid, current_position);
             if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
@@ -76,7 +58,6 @@ int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECE
     {
         xor[i] = (receptor_cell[i] ^ receptor_other[i]);
     }
-    printf("%x %x\n", xor[0] && 0xff, xor[1] & 0xff);
     for (int i = 0; i < RECEPTOR_SIZE; i++) 
     {
         for (int j = 0; j < 8; j++)
@@ -94,7 +75,7 @@ void correct_position(Vector* position) {
     }
     if (position->x < 0)
     {
-        position->x = SIZE - position->x;
+        position->x = SIZE + position->x;
     }
     if (position->y >= SIZE)
     {
@@ -102,7 +83,7 @@ void correct_position(Vector* position) {
     }
     if (position->y < 0)
     {
-        position->y = SIZE - position->y;
+        position->y = SIZE + position->y;
     }
 }
 
@@ -122,4 +103,42 @@ void find_antigen(Cell* cell, Cell* other)
         }
     }
 }
+
+void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid)
+{
+    bool duplicated = false;
+    for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && !duplicated; i++)
+    {
+        for (int j = -PROXIMITY_DISTANCE; j <= PROXIMITY_DISTANCE && !duplicated; j++) 
+        {
+
+            Vector new_position = 
+            {
+                .x = cell->position.x + i,
+                .y = cell->position.y + j
+            };
+            correct_position(&new_position);
+            Cell* free_cell = access_grid(old_grid, new_position);
+            if (free_cell->type == FREE)
+            {
+                Cell new_cell = 
+                {
+                    .action = cell->action,
+                    .receptor = cell->receptor,
+                    .status = INACTIVE,
+                    .velocity = {0, 0},
+                    .position = new_position
+                };
+                *free_cell = new_cell;
+                duplicated = true;
+            }
+        }
+    }
+}
+
+void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid)
+{
+
+}
+
 

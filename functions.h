@@ -5,14 +5,22 @@
 
 #include "cell.h"
 
+/**
+ * Given a position, it returns a pointer to the requested cell of the grid.
+ * @param grid grid of the simulation
+ * @param position position (x, y) of the requested cell
+ * @returns a pointer to a cell
+ */
+inline Cell* access_grid(Cell* grid, Vector position);
 
 /**
  * Action made by a B lymphocyte every timestep. Depending on its status, it checks the presence of
  * antigens or T helper lymphocytes nearby or it duplicates and create more antibodies.
  * @param b this lymphocyte that calls the action
- * @param grid grid where the B lymphocyte is moving
+ * @param old_grid grid where the B lymphocyte is moving
+ * @param new_grid grid where the B lymphocyte will be in next timestep
  */
-void lympho_B_action(Cell* b, Cell* grid);
+void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
 
 /**
  * Action made by an inactive B lymphocyte or an antibody to search for antigens nearby.
@@ -49,5 +57,22 @@ int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECE
  * @param other cell of the found antigen, so that the antibody can destroy it and free it
  */
 void find_antigen(Cell* cell, Cell* other);
+
+/**
+ * It duplicates the given cell in a free nearby position in the new_grid.
+ * The old grid and the new grid can be a reference to the same grid.
+ * @param cell the cell to duplicate
+ * @param old_grid the old grid where the cell was
+ * @param new_grid the new grid where the cell's duplicate will be
+ */
+void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid);
+
+/**
+ * Given an operative B lymphocyte, it creates antibodies with the same receptor nearby to destroy antigens.
+ * @param cell the B lymphocyte that creates antibodies
+ * @param old_grid the old grid where the cell was
+ * @param new_grid the new grid where the created antibodies will be
+ */
+void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid);
 
 #endif
