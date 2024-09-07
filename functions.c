@@ -17,6 +17,10 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
             search_antigens(b, old_grid, new_grid);
             break;
         }
+        case ACTIVE:
+        {
+            search_lympho_T(b, old_grid);
+        }
         case OPERATIVE:
         {
             duplicate(b, old_grid, new_grid);
@@ -70,7 +74,8 @@ int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECE
     return distance;
 }
 
-void correct_position(Vector* position) {
+void correct_position(Vector* position) 
+{
     if (position->x >= SIZE)
     {
         position->x -= SIZE;
@@ -102,6 +107,27 @@ void find_antigen(Cell* cell, Cell* other)
         {
             other->type = FREE;
             break;
+        }
+    }
+}
+
+void search_lympho_T(Cell* b, Cell* old_grid)
+{
+    for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
+    {
+        for (int j = -PROXIMITY_DISTANCE; j <= PROXIMITY_DISTANCE; j++) 
+        {
+            Vector current_position = 
+            {
+                .x = b->position.x + i,
+                .y = b->position.y + j 
+            };
+            correct_position(&current_position);
+            Cell* other = access_grid(old_grid, current_position);
+            if (other->type == T)
+            {
+                b->status = OPERATIVE;
+            }
         }
     }
 }

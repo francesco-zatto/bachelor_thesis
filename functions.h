@@ -55,6 +55,14 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
 void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid);
 
 /**
+ * Action made by an active B lymphocyte that is already bound to an antigen, so it searches for the closest lympho T
+ * to react with, so that the B cell can become operative.
+ * @param b B lymphocyte that searches in the grid
+ * @param old_grid grid of cells where the B lymphocyte has to search
+ */
+void search_lympho_T(Cell* b, Cell* old_grid);
+
+/**
  * It corrects a position that could be outside the grid.
  * @param position cell position to check
  */
