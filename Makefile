@@ -1,5 +1,8 @@
 sequential: sequential.c functions.c cell.h functions.h
-	gcc sequential.c -o exe/sequential 
+	gcc sequential.c -o exe/sequential
+
+run-sequential: exe/sequential
+	./exe/sequential
 
 langevin: langevin/langevin.c cell.h
 	gcc langevin/langevin.c -o langevin/exe/langevin -lm

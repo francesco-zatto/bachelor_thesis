@@ -46,6 +46,7 @@ void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid)
             if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
+                return;
             }
         }
     }
@@ -127,6 +128,7 @@ void search_lympho_T(Cell* b, Cell* old_grid)
             if (other->type == T)
             {
                 b->status = OPERATIVE;
+                return;
             }
         }
     }
