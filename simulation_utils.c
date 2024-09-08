@@ -1,10 +1,43 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "simulation_utils.h"
 #include "functions.h"
 
 int counts[4] = {0, 0, 0, 0};
+
+void read_parameters(Options *options, int *parameters, int n)
+{
+    Options DEFAULT_OPTIONS = 
+    {
+    .cells_B_number = cells_B_number,
+    .cells_T_number = cells_T_number,
+    .grid_size = size,
+    .ag_number = ag_number,
+    .total_number_cells = cells_B_number + cells_T_number + ag_number
+    };
+
+    *options = DEFAULT_OPTIONS;
+    switch (n)
+    {
+    case 4:
+        options->grid_size = parameters[3];
+    case 3:
+        options->cells_B_number = parameters[0];
+        options->cells_T_number = parameters[1];
+        options->ag_number = parameters[2];
+        break;
+    case 1:
+        options->grid_size = parameters[0];
+        break;
+    }
+
+    int grid = options->grid_size * options->grid_size;
+    int total_cells = options->ag_number + options->cells_B_number + options->cells_T_number;
+
+    assert(grid < total_cells);
+}
 
 void generation(Cell *grid, int length, Options options)
 {
