@@ -47,6 +47,14 @@ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_
 void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
 
 /**
+ * Default action made by any other cell without a specific action like B lyphocytes or antibodies.
+ * @param cell this cell that calls the action
+ * @param old_grid grid where the cell is moving
+ * @param new_grid grid where the cell will be in next timestep
+ */
+void default_action(Cell* cell, Cell* old_grid, Cell* new_grid);
+
+/**
  * Action made by an inactive B lymphocyte or an antibody to search for antigens nearby.
  * @param cell this lymphocyte or this antibody that calls the action
  * @param old_grid grid where the cells are moving in this timestep

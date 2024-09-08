@@ -17,6 +17,8 @@ typedef struct {
     float y;
 } Vector;
 
+const Vector NULL_VECTOR = {0, 0};
+
 typedef struct Cell {
     Type type;
     Vector position;
@@ -31,6 +33,7 @@ typedef struct {
     int cells_B_number;
     int cells_T_number;
     int ag_number;
+    int grid_size;
 } Options;
 
 #endif

@@ -30,6 +30,11 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
     }
 }
 
+void default_action(Cell *cell, Cell *old_grid, Cell *new_grid)
+{
+    
+}
+
 void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
@@ -200,14 +205,14 @@ void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid)
     }
 }
 
-void create_antibody(Cell B_cell, Cell* antigen, Vector position)
+void create_antibody(Cell B_cell, Cell* antibody, Vector position)
 {
-    antigen->action = search_antigens;
-    antigen->type = Ab;
-    antigen->velocity.x = 0;
-    antigen->velocity.y = 0;
-    antigen->position = position;
-    copy_receptor(antigen->receptor, B_cell.receptor);
+    antibody->action = search_antigens;
+    antibody->type = Ab;
+    antibody->velocity.x = 0;
+    antibody->velocity.y = 0;
+    antibody->position = position;
+    copy_receptor(antibody->receptor, B_cell.receptor);
 }
 
 
