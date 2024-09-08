@@ -39,4 +39,30 @@ There are two ways to draw the brownian movement:
  Even in this case the result is the plot of the generated cells inside the grid as a `csv` file. And you have to use the `ipynb` plotter file to represent it in a plot.
 
  ## Simulation: repo folder
- 
+ In the main folder of the repository, you can run the sequential or the parallel code.
+ In both cases the user can choose the default values used in simulation, the ones present in `simulation_utils.h`, or they can choose any value they want for grid's size or the number of cells. The next commands can be ran only when the required executable is already present. To check how to compile the source codes check the next section for sequential and parallel programs. 
+ ```
+ # To run it with default values
+ make run-sequential
+ make run-parallel
+
+ #To run it with a chosen grid size
+ ./exe/sequential <n>
+ ./exe/parallel <n>
+
+ #To run it with a chosen number of B cells, T cells and antigens
+ ./exe/sequential <b> <t> <ag>
+ ./exe/parallel <b> <t> <ag>
+
+ #To run it with a chosen grid size and chosen number of cells
+ ./exe/sequential <b> <t> <ag> <n>
+ ./exe/parallel <b> <t> <ag> <n>
+ ```
+
+### Sequential program
+In the sequential program the whole simulation will be ran without any piece of parallel code, so no CUDA at all. To compile it just run the following comand:
+```
+make sequential
+```
+
+### Parallel program
