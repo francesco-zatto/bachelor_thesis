@@ -52,7 +52,7 @@ void read_parameters(Options* options, const char* parameters[], int n);
  * @param grid grid to generate
  * @param options generation options, like B cells quantity
  */
-void generation(Cell* grid, Options options);
+void generation(Grid* grid, Options options);
 
 /**
  * Function to create a single cell given its position and its type.
@@ -75,6 +75,12 @@ Type extract_type(Options options);
  * @param new new grid of the next timestep
  * @param size grid's side length
  */
-void swap_grids(Cell* old, Cell* new, int size);
+void swap_grids(Grid* old, Grid* new, int size);
+
+/**
+ * Function to fill a grid with only free cells. It does not deallocate grid memory.
+ * @param grid output grid that will contain only free cells
+ */
+void free_grid(Grid* grid);
 
 #endif

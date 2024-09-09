@@ -2,12 +2,12 @@
 
 #include "functions.h"
 
-inline Cell* access_grid(Cell* grid, Vector position)
+inline Cell* access_grid(Grid* grid, Vector position)
 {
-    return &grid[(int)position.x * SIZE + (int)(position).y];
+    return &grid->matrix[(int)position.x * grid->size + (int)(position).y];
 }
 
-void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
+void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
 {
     switch (b->status)
     {
@@ -29,12 +29,12 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid)
     }
 }
 
-void default_action(Cell *cell, Cell *old_grid, Cell *new_grid)
+void default_action(Cell *cell, Grid *old_grid, Grid *new_grid)
 {
     
 }
 
-void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid)
+void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -45,7 +45,7 @@ void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid)
                 .x = cell->position.x + i,
                 .y = cell->position.y + j 
             };
-            correct_position(&current_position);
+            correct_position(&current_position, old_grid->size);
             Cell* other = access_grid(old_grid, current_position);
             if (is_matching_antigen(*cell, *other))
             {
@@ -79,23 +79,23 @@ int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECE
     return distance;
 }
 
-void correct_position(Vector* position) 
+void correct_position(Vector* position, int size) 
 {
-    if (position->x >= SIZE)
+    if (position->x >= size)
     {
-        position->x -= SIZE;
+        position->x -= size;
     }
     if (position->x < 0)
     {
-        position->x = SIZE + position->x;
+        position->x = size + position->x;
     }
-    if (position->y >= SIZE)
+    if (position->y >= size)
     {
-        position->y -= SIZE;
+        position->y -= size;
     }
     if (position->y < 0)
     {
-        position->y = SIZE + position->y;
+        position->y = size + position->y;
     }
 }
 
@@ -116,7 +116,7 @@ void find_antigen(Cell* cell, Cell* other)
     }
 }
 
-void search_lympho_T(Cell* b, Cell* old_grid)
+void search_lympho_T(Cell* b, Grid* old_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -127,7 +127,7 @@ void search_lympho_T(Cell* b, Cell* old_grid)
                 .x = b->position.x + i,
                 .y = b->position.y + j 
             };
-            correct_position(&current_position);
+            correct_position(&current_position, old_grid->size);
             Cell* other = access_grid(old_grid, current_position);
             if (other->type == T)
             {
@@ -138,7 +138,7 @@ void search_lympho_T(Cell* b, Cell* old_grid)
     }
 }
 
-void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid)
+void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     bool duplicated = false;
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && !duplicated; i++)
@@ -151,7 +151,7 @@ void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid)
                 .x = cell->position.x + i,
                 .y = cell->position.y + j
             };
-            correct_position(&new_position);
+            correct_position(&new_position, old_grid->size);
             Cell* free_cell = access_grid(old_grid, new_position);
             if (free_cell->type == FREE)
             {
@@ -181,7 +181,7 @@ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_
     }
 }
 
-void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid)
+void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     int created = 0;
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && created < NUMBER_CREATED_ANTIGENS; i++)
@@ -193,7 +193,7 @@ void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid)
                 .x = cell->position.x + i,
                 .y = cell->position.y + j
             };
-            correct_position(&new_position);
+            correct_position(&new_position, old_grid->size);
             Cell* free_cell = access_grid(old_grid, new_position);
             if (free_cell->type == FREE)
             {

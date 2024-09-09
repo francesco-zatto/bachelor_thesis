@@ -36,7 +36,7 @@ double get_mass(Type type);
  * @param cell cell to update their current velocity and position
  * @param new_grid grid to place cell in next timestep
  */
-void movement(Cell *cell, Cell *new_grid);
+void movement(Cell *cell, Grid *new_grid);
 
 /**
  * It generates two random numbers following a normal distribution.

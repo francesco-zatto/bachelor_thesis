@@ -7,18 +7,8 @@
 #include "physics.h"
 #include "simulation_utils.h"
 
-int main(int argc, char const *argv[])
+void simulation(Grid* grid, Grid* next_grid, Options options)
 {
-    srand(time(NULL));
-
-    Options options;
-    read_parameters(&options, argv, argc - 1);
-
-    Cell* grid = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size),
-        *next_grid = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size),
-        *temp;
-    generation(grid, options);
-
     for (int t = 0; t < TIMESTEPS; t++)
     {
         for (int i = 0; i < options.grid_size; i++)
@@ -27,14 +17,32 @@ int main(int argc, char const *argv[])
             {
                 Vector position = {i, j};
                 Cell* cell = access_grid(grid, position);
-                cell->action(cell, grid, next_grid);                
+                cell->action(cell, grid, next_grid);  
                 movement(cell, next_grid);
             }
         }
         swap_grids(grid, next_grid, options.grid_size);
     }
+}
 
-    free(grid);
-    free(next_grid);
+int main(int argc, char const *argv[])
+{
+    srand(time(NULL));
+
+    Options options;
+    read_parameters(&options, argv, argc - 1);
+
+    Grid grid, next_grid;
+    grid.size = next_grid.size = options.grid_size;
+    grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size),
+    next_grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size);
+    
+    generation(&grid, options);
+    free_grid(&next_grid);
+
+    simulation(&grid, &next_grid, options);
+
+    free(grid.matrix);
+    free(next_grid.matrix);
     return 0;
 }

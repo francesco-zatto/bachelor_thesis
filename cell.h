@@ -17,14 +17,21 @@ typedef struct {
     float y;
 } Vector;
 
+struct Grid;
+
 typedef struct Cell {
     Type type;
     Vector position;
     Vector velocity;
     Status status;
     unsigned char receptor[RECEPTOR_SIZE];
-    void (*action)(struct Cell*, struct Cell*, struct Cell*);
+    void (*action)(struct Cell*, struct Grid*, struct Grid*);
 } Cell;
+
+typedef struct Grid {
+    Cell* matrix;
+    int size;
+} Grid;
 
 typedef struct {
     int total_number_cells;

@@ -4,8 +4,11 @@
 #include "physics.h"
 #include "functions.h"
 
-void movement(Cell *cell, Cell *new_grid)
+void movement(Cell *cell, Grid *new_grid)
 {
+    if (cell->type == FREE)
+        return;
+    
     float box_muller_number[2];
     box_muller(box_muller_number);
     double mass = get_mass(cell->type);
@@ -18,7 +21,9 @@ void movement(Cell *cell, Cell *new_grid)
     cell->velocity.y += delta_velocity.y;
     cell->position.x += round(cell->velocity.x * TIMESTEP);
     cell->position.y += round(cell->velocity.y * TIMESTEP);
-    correct_position(&(cell->position));
+    correct_position(&(cell->position), new_grid->size);
+    Cell* new = access_grid(new_grid, cell->position);
+    *new = *cell;
 }
 
 double inline langevin_equation(double velocity, double collision_forces, double mass)

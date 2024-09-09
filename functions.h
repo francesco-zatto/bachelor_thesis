@@ -21,7 +21,7 @@
  * @param position position (x, y) of the requested cell
  * @returns a pointer to a cell
  */
-Cell* access_grid(Cell* grid, Vector position);
+Cell* access_grid(Grid* grid, Vector position);
 
 /**
  * It creates a duplicate in a certain position of a given B lymphocyte.
@@ -54,7 +54,7 @@ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_
  * @param old_grid grid where the B lymphocyte is moving
  * @param new_grid grid where the B lymphocyte will be in next timestep
  */
-void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
+void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid);
 
 /**
  * Default action made by any other cell without a specific action like B lyphocytes or antibodies.
@@ -62,7 +62,7 @@ void lympho_B_action(Cell* b, Cell* old_grid, Cell* new_grid);
  * @param old_grid grid where the cell is moving
  * @param new_grid grid where the cell will be in next timestep
  */
-void default_action(Cell* cell, Cell* old_grid, Cell* new_grid);
+void default_action(Cell* cell, Grid* old_grid, Grid* new_grid);
 
 /**
  * Action made by an inactive B lymphocyte or an antibody to search for antigens nearby.
@@ -70,7 +70,7 @@ void default_action(Cell* cell, Cell* old_grid, Cell* new_grid);
  * @param old_grid grid where the cells are moving in this timestep
  * @param new_grid grif where the cells will move in next timestep
  */
-void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid);
+void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid);
 
 /**
  * Action made by an active B lymphocyte that is already bound to an antigen, so it searches for the closest lympho T
@@ -78,13 +78,14 @@ void search_antigens(Cell* cell, Cell* old_grid, Cell* new_grid);
  * @param b B lymphocyte that searches in the grid
  * @param old_grid grid of cells where the B lymphocyte has to search
  */
-void search_lympho_T(Cell* b, Cell* old_grid);
+void search_lympho_T(Cell* b, Grid* old_grid);
 
 /**
  * It corrects a position that could be outside the grid.
  * @param position cell position to check
+ * @param size of the grid
  */
-void correct_position(Vector* position);
+void correct_position(Vector* position, int size);
 
 /**
  * It returns true if the other cell is an antigen with a matching receptor.
@@ -116,7 +117,7 @@ void find_antigen(Cell* cell, Cell* other);
  * @param old_grid the old grid where the cell was
  * @param new_grid the new grid where the cell's duplicate will be
  */
-void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid);
+void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid);
 
 /**
  * Given an operative B lymphocyte, it creates antibodies with the same receptor nearby to destroy antigens.
@@ -124,6 +125,6 @@ void duplicate(Cell* cell, Cell* old_grid, Cell* new_grid);
  * @param old_grid the old grid where the cell was
  * @param new_grid the new grid where the created antibodies will be
  */
-void create_antibodies(Cell* cell, Cell* old_grid, Cell* new_grid);
+void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid);
 
 #endif

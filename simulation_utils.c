@@ -12,9 +12,13 @@ int counts[5] = {0};
 
 const Vector NULL_VECTOR = {0, 0};
 
-const Cell FREE_CELL = {.type = FREE};
+const Cell FREE_CELL = 
+{
+    .type = FREE,
+    .action = default_action
+};
 
-const int TIMESTEPS = 1000;
+const int TIMESTEPS = 100;
 
 const int GRID_SIZE = 2000;
 
@@ -53,11 +57,12 @@ void read_parameters(Options *options, const char *parameters[], int n)
     assert(options->grid_size > sqrt(options->total_number_cells));
 }
 
-void generation(Cell *grid, Options options)
+void generation(Grid *grid, Options options)
 {
-    for (int i = 0; i < options.grid_size; i++) 
+    printf("%d", options.grid_size);
+    for (int i = 0; i < grid->size; i++) 
     {
-        for (int j = 0; j < options.grid_size; j++)
+        for (int j = 0; j < grid->size; j++)
         {
             Vector position = {i, j};
             Type type = extract_type(options);
@@ -98,7 +103,7 @@ Type extract_type(Options options)
     return type;
 }
 
-void swap_grids(Cell *old, Cell *new, int size)
+void swap_grids(Grid *old, Grid *new, int size)
 {
     Cell *old_cell, *new_cell;
     for (int i = 0; i < size; i++)
@@ -113,3 +118,17 @@ void swap_grids(Cell *old, Cell *new, int size)
         }
     }
 }
+
+void free_grid(Grid* grid)
+{
+    for (int i = 0; i < grid->size; i++)
+    {
+        for (int j = 0; j < grid->size; j++)
+        {
+            Vector position = {i, j};
+            Cell* cell = access_grid(grid, position);
+            *cell = FREE_CELL;
+        }
+    }
+}
+
