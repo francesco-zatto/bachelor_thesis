@@ -83,4 +83,11 @@ void swap_grids(Grid* old, Grid* new, int size);
  */
 void free_grid(Grid* grid);
 
+/**
+ * Function to save every information about the cells inside the given grid in the current state
+ * @param grid grid to save in external file
+ * @param filename name of the file
+ */
+void save_grid(Grid grid, char* filename);
+
 #endif

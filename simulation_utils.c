@@ -132,3 +132,32 @@ void free_grid(Grid* grid)
     }
 }
 
+void save_grid(Grid grid, char *filename)
+{
+    FILE* out = fopen(filename, "w");
+
+    fprintf(out, "Type;Pos_x;Pos_y;Vel_x;Vel_y;");
+    for (int l = 0; l < RECEPTOR_SIZE; l++)
+    {
+        fprintf(out, "Receptor_%d;", l);
+    }
+    fprintf(out, "Status\n");
+
+    for (int i = 0; i < grid.size; i++)
+    {
+        for (int j = 0; j < grid.size; j++)
+        {
+            Vector position = {i, j};
+            Cell cell = *access_grid(&grid, position);
+            fprintf(
+                out, "%d;%f;%f;%f;%f;", 
+                cell.type, cell.position.x, cell.position.y, cell.velocity.x, cell.velocity.y
+            );
+            for (int l = 0; l < RECEPTOR_SIZE; l++)
+            {
+                fprintf(out, "%x;", cell.receptor[i] & 0xff);
+            }
+            fprintf(out, "%d\n", cell.status);
+        }
+    }
+}
