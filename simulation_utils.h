@@ -4,24 +4,39 @@
 #include "cell.h"
 
 /**
+ * 2D Vector with coordinates set to 0.
+ */
+extern const Vector NULL_VECTOR;
+
+/**
+ * Cell with type set to free. Used to free the next grid.
+ */
+extern const Cell FREE_CELL;
+
+/**
+ * Timesteps of the HIS simulation.
+ */
+extern const int TIMESTEPS;
+
+/**
  * Size of grid size.
  */
-const int size = 2000;
+extern const int GRID_SIZE;
 
 /**
  * Default number of B lymphocytes of the simulation.
  */
-const int cells_B_number = 1000;
+extern const int CELLS_B_NUMBER;
 
 /**
  * Default number of T helper lymphocytes of the simulation.
  */
-const int cells_T_number = 1000;
+extern const int CELLS_T_NUMBER;
 
 /**
  * Default number of antigens of the simulation.
  */
-const int ag_number = 5000;
+extern const int AG_NUMBER;
 
 /**
  * Function to read command line parameters to change default values,
@@ -30,15 +45,14 @@ const int ag_number = 5000;
  * @param parameters command line parameters
  * @param n number of parameters to save
  */
-void read_parameters(Options* options, int* parameters, int n);
+void read_parameters(Options* options, const char* parameters[], int n);
 
 /**
- * Function to generate the grid, taking its sides.
+ * Function to generate the grid, taking generation's options.
  * @param grid grid to generate
- * @param length length of the square grid size
  * @param options generation options, like B cells quantity
  */
-void generation(Cell* grid, int length, Options options);
+void generation(Cell* grid, Options options);
 
 /**
  * Function to create a single cell given its position and its type.
@@ -54,5 +68,13 @@ void create_cell(Cell* cell, Vector position, Type type);
  * @return type of the current cell
  */
 Type extract_type(Options options);
+
+/**
+ * Function to swap old grid and the new one to continue the simulation with the same grid.
+ * @param old old grid of the current timestep
+ * @param new new grid of the next timestep
+ * @param size grid's side length
+ */
+void swap_grids(Cell* old, Cell* new, int size);
 
 #endif

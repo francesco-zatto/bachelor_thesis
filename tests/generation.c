@@ -15,17 +15,17 @@
 /**
  * Default number of B lymphocytes of the simulation.
  */
-int cells_B_number = 1000;
+int CELLS_B_NUMBER = 1000;
 
 /**
  * Default number of T helper lymphocytes of the simulation.
  */
-int cells_T_number = 1000;
+int CELLS_T_NUMBER = 1000;
 
 /**
  * Default number of antigens of the simulation.
  */
-int ag_number = 5000;
+int AG_NUMBER = 5000;
 
 /**
  * Generation process of the simulation cells given the options.
@@ -60,17 +60,17 @@ int main(int argc, char const *argv[])
     srand(time(NULL));
     if (argc == 4) 
     {
-        cells_B_number = atoi(argv[1]);
-        cells_T_number = atoi(argv[2]);
-        ag_number = atoi(argv[3]);
+        CELLS_B_NUMBER = atoi(argv[1]);
+        CELLS_T_NUMBER = atoi(argv[2]);
+        AG_NUMBER = atoi(argv[3]);
     }
 
     Options options = 
     {
-        .total_number_cells = cells_B_number + cells_T_number + ag_number,
-        .cells_B_number = cells_B_number,
-        .cells_T_number = cells_T_number,
-        .ag_number = ag_number
+        .total_number_cells = CELLS_B_NUMBER + CELLS_T_NUMBER + AG_NUMBER,
+        .cells_B_number = CELLS_B_NUMBER,
+        .cells_T_number = CELLS_T_NUMBER,
+        .ag_number = AG_NUMBER
     };
     Cell* cells = calloc(options.total_number_cells, sizeof(Cell));
 

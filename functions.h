@@ -6,6 +6,16 @@
 #include "cell.h"
 
 /**
+ * Fluid viscosity. It slows down the cell's movement in the fluid.
+ */
+#define LAMBDA 0.1
+
+/**
+ * Size of each misuration timestep.
+ */
+#define TIMESTEP 0.2
+
+/**
  * Given a position, it returns a pointer to the requested cell of the grid.
  * @param grid grid of the simulation
  * @param position position (x, y) of the requested cell

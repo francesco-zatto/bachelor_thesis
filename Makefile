@@ -1,5 +1,5 @@
 sequential: sequential.c functions.c cell.h functions.h
-	gcc sequential.c -o exe/sequential
+	gcc sequential.c functions.c simulation_utils.c physics.c -o exe/sequential -lm
 
 run-sequential: exe/sequential
 	./exe/sequential

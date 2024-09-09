@@ -1,7 +1,6 @@
-#include "cell.h"
-#include "functions.h"
-
 #include <stdio.h>
+
+#include "functions.h"
 
 inline Cell* access_grid(Cell* grid, Vector position)
 {
@@ -214,5 +213,3 @@ void create_antibody(Cell B_cell, Cell* antibody, Vector position)
     antibody->position = position;
     copy_receptor(antibody->receptor, B_cell.receptor);
 }
-
-
