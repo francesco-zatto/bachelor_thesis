@@ -18,15 +18,15 @@ const Cell FREE_CELL =
     .action = default_action
 };
 
-const int TIMESTEPS = 2;
+const int TIMESTEPS = 100;
 
-const int GRID_SIZE = 2000;
+const int GRID_SIZE = 1000;
 
-const int CELLS_B_NUMBER = 1000;
+const int CELLS_B_NUMBER = 200;
 
-const int CELLS_T_NUMBER = 1000;
+const int CELLS_T_NUMBER = 200;
 
-const int AG_NUMBER = 5000;
+const int AG_NUMBER = 2000;
 
 void read_parameters(Options *options, const char *parameters[], int n)
 {

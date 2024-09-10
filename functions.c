@@ -152,7 +152,7 @@ void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = access_grid(old_grid, new_position);
+            Cell* free_cell = access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_duplicate(*cell, free_cell, new_position);
@@ -194,7 +194,7 @@ void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = access_grid(old_grid, new_position);
+            Cell* free_cell = access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_antibody(*cell, free_cell, new_position);

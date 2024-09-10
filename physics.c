@@ -19,6 +19,7 @@ static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
             for (int j = -s; j < s; j += s)
             {
                 Vector position = {start->position.x + i, start->position.y + j};
+                correct_position(&position, grid->size);
                 Cell* cell = access_grid(grid, position);
                 if (cell->type == FREE)
                 {
@@ -70,7 +71,7 @@ double inline get_mass(Type type)
         return 0.2;
     case Ag:
     case Ab:
-        return 0.04;
+        return 0.01;
     }
 }
 

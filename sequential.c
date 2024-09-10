@@ -22,6 +22,10 @@ void simulation(Grid* grid, Grid* next_grid, Options options)
             }
         }
         swap_grids(grid, next_grid, options.grid_size);
+        if (t == TIMESTEPS / 2)
+        {
+            save_grid(grid, "grids/mid.csv");
+        }
     }
 }
 
