@@ -8,8 +8,6 @@
 #include "simulation_utils.h"
 #include "functions.h"
 
-int counts[5] = {0};
-
 const Vector NULL_VECTOR = {0, 0};
 
 const Cell FREE_CELL = 
@@ -39,20 +37,24 @@ void read_parameters(Options *options, const char *parameters[], int n)
     .total_number_cells = CELLS_B_NUMBER + CELLS_T_NUMBER + AG_NUMBER
     };
 
+    //Setting simulation options to default.
     *options = DEFAULT_OPTIONS;
     switch (n)
     {
-    case 4:
-        options->grid_size = atoi(parameters[4]);
-    case 3:
-        options->cells_B_number = atoi(parameters[1]);
-        options->cells_T_number = atoi(parameters[2]);
-        options->ag_number = atoi(parameters[3]);
-        options->total_number_cells = options->cells_B_number + options->cells_T_number + options->ag_number;
-        break;
-    case 1:
-        options->grid_size = atoi(parameters[1]);
-        break;
+        //For 4 user parameters, the fourth is the grid's size.
+        case 4:
+            options->grid_size = atoi(parameters[4]);
+        //First 3 user parameters are B cells, T cells and antigens number.
+        case 3:
+            options->cells_B_number = atoi(parameters[1]);
+            options->cells_T_number = atoi(parameters[2]);
+            options->ag_number = atoi(parameters[3]);
+            options->total_number_cells = options->cells_B_number + options->cells_T_number + options->ag_number;
+            break;
+        //In case of only 1 parameter, it's the grid's size.
+        case 1:
+            options->grid_size = atoi(parameters[1]);
+            break;
     }
     assert(options->grid_size > sqrt(options->total_number_cells));
 }
@@ -63,9 +65,11 @@ void generation(Grid *grid, Options options)
     {
         for (int j = 0; j < grid->size; j++)
         {
+            /**
+             * Extracting type of the current position and creating a cell in it.
+             */
             Vector position = {i, j};
             Type type = extract_type(options);
-            counts[type]++;
             create_cell(access_grid(grid, position), position, type);
         }
     }
@@ -88,6 +92,11 @@ void create_cell(Cell *cell, Vector position, Type type)
 
 Type extract_type(Options options)
 {
+    /**
+     * It chooses a type as a number in [0, size * size).
+     * For example, if n is in [B_cells, B_cells + T_cells] it extract a T cell.
+     * So, it doesn't extract exactly the requested number of cells, but a very close number.
+     */
     int total = options.grid_size * options.grid_size;
     int cells_B_prob = options.cells_B_number;
     int cells_T_prob = cells_B_prob + options.cells_T_number;
@@ -97,7 +106,6 @@ Type extract_type(Options options)
     Type type = prob < cells_B_prob 
             ? B 
             : (prob < cells_T_prob ? T : (prob < ag_prob ? Ag : FREE));
-    counts[type]++;
     return type;
 }
 
@@ -134,6 +142,7 @@ void save_grid(Grid* grid, char *filename)
 {
     FILE* out = fopen(filename, "w");
 
+    //Header of the csv file
     fprintf(out, "Type;Pos_x;Pos_y;Vel_x;Vel_y;");
     for (int l = 0; l < RECEPTOR_SIZE; l++)
     {
@@ -141,6 +150,7 @@ void save_grid(Grid* grid, char *filename)
     }
     fprintf(out, "Status\n");
 
+    //A row for each cell and a column for each cell's member.
     for (int i = 0; i < grid->size; i++)
     {
         for (int j = 0; j < grid->size; j++)
