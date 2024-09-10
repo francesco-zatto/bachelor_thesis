@@ -40,7 +40,11 @@ int main(int argc, char const *argv[])
     generation(&grid, options);
     free_grid(&next_grid);
 
+    save_grid(&grid, "grids/start.csv");
+
     simulation(&grid, &next_grid, options);
+
+    save_grid(&grid, "grids/end.csv");
 
     free(grid.matrix);
     free(next_grid.matrix);

@@ -88,6 +88,6 @@ void free_grid(Grid* grid);
  * @param grid grid to save in external file
  * @param filename name of the file
  */
-void save_grid(Grid grid, char* filename);
+void save_grid(Grid* grid, char* filename);
 
 #endif

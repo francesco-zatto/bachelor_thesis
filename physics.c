@@ -4,6 +4,32 @@
 #include "physics.h"
 #include "functions.h"
 
+/**
+ * Function to find a free cell nearby if given starting cell is taken.
+ * @param start start cell to search for another free cell
+ * @param grid grid where the search is taken
+ * @param return free cell near start
+ */
+static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
+{
+    for (int s = 1; s <= PROXIMITY_DISTANCE; s++)
+    {
+        for (int i = -s; i < s; i += s)
+        {
+            for (int j = -s; j < s; j += s)
+            {
+                Vector position = {start->position.x + i, start->position.y + j};
+                Cell* cell = access_grid(grid, position);
+                if (cell->type == FREE)
+                {
+                    return cell;
+                }
+            }
+        }
+    }
+    return start;
+}
+
 void movement(Cell *cell, Grid *new_grid)
 {
     if (cell->type == FREE)
@@ -23,6 +49,10 @@ void movement(Cell *cell, Grid *new_grid)
     cell->position.y += round(cell->velocity.y * TIMESTEP);
     correct_position(&(cell->position), new_grid->size);
     Cell* new = access_grid(new_grid, cell->position);
+    if (new->type != FREE)
+    {
+        new = find_free_cell_nearby(new, new_grid);
+    }
     *new = *cell;
 }
 
@@ -37,10 +67,10 @@ double inline get_mass(Type type)
     {
     case B:
     case T:
-        return 1;
+        return 0.2;
     case Ag:
     case Ab:
-        return 0.08;
+        return 0.04;
     }
 }
 

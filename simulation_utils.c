@@ -18,7 +18,7 @@ const Cell FREE_CELL =
     .action = default_action
 };
 
-const int TIMESTEPS = 100;
+const int TIMESTEPS = 2;
 
 const int GRID_SIZE = 2000;
 
@@ -59,7 +59,6 @@ void read_parameters(Options *options, const char *parameters[], int n)
 
 void generation(Grid *grid, Options options)
 {
-    printf("%d", options.grid_size);
     for (int i = 0; i < grid->size; i++) 
     {
         for (int j = 0; j < grid->size; j++)
@@ -70,7 +69,6 @@ void generation(Grid *grid, Options options)
             create_cell(access_grid(grid, position), position, type);
         }
     }
-    printf("B: %d, T: %d, Ag: %d, Free: %d\n", counts[B], counts[T], counts[Ag], counts[FREE]);
 }
 
 void create_cell(Cell *cell, Vector position, Type type)
@@ -132,7 +130,7 @@ void free_grid(Grid* grid)
     }
 }
 
-void save_grid(Grid grid, char *filename)
+void save_grid(Grid* grid, char *filename)
 {
     FILE* out = fopen(filename, "w");
 
@@ -143,21 +141,25 @@ void save_grid(Grid grid, char *filename)
     }
     fprintf(out, "Status\n");
 
-    for (int i = 0; i < grid.size; i++)
+    for (int i = 0; i < grid->size; i++)
     {
-        for (int j = 0; j < grid.size; j++)
+        for (int j = 0; j < grid->size; j++)
         {
             Vector position = {i, j};
-            Cell cell = *access_grid(&grid, position);
-            fprintf(
+            Cell cell = *access_grid(grid, position);
+            if (cell.type != FREE)
+            {
+                fprintf(
                 out, "%d;%f;%f;%f;%f;", 
                 cell.type, cell.position.x, cell.position.y, cell.velocity.x, cell.velocity.y
-            );
-            for (int l = 0; l < RECEPTOR_SIZE; l++)
-            {
-                fprintf(out, "%x;", cell.receptor[i] & 0xff);
+                );
+                for (int l = 0; l < RECEPTOR_SIZE; l++)
+                {
+                    fprintf(out, "%d;", cell.receptor[l]);
+                }
+                fprintf(out, "%d\n", cell.status);
             }
-            fprintf(out, "%d\n", cell.status);
         }
     }
+    fclose(out);
 }
