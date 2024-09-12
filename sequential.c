@@ -3,9 +3,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "functions.h"
-#include "physics.h"
-#include "simulation_utils.h"
+#include "sequential/functions.h"
+#include "sequential/physics.h"
+#include "sequential/simulation_utils.h"
 
 /**
  * Actual simulation function that for n timesteps updates cells in the grid.
@@ -32,13 +32,8 @@ void simulation(Grid* grid, Grid* next_grid, Options options)
         }
         /**
          * Swapping grids, so that for every iteration it is used the same grid variable.
-         * At the middle of the simulation, taking a grid snapshot of cells' positions.
          */
         swap_grids(grid, next_grid, options.grid_size);
-        if (t == TIMESTEPS / 2)
-        {
-            save_grid(grid, "grids/mid.csv");
-        }
     }
 }
 
@@ -65,6 +60,12 @@ int main(int argc, char const *argv[])
 
     //Save cells at the start in a file
     save_grid(&grid, "grids/start.csv");
+
+    simulation(&grid, &next_grid, options);
+
+    //Save cells in the middle of the simulation, before inserting new antigens.
+    save_grid(&grid, "grids/mid.csv");
+    insert_antigens(&grid);
 
     simulation(&grid, &next_grid, options);
 
