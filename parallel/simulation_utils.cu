@@ -10,7 +10,13 @@
 
 const Vector NULL_VECTOR = {0, 0};
 
-const Cell FREE_CELL = 
+__constant__ Cell D_FREE_CELL = 
+{
+    .type = FREE,
+    .action = default_action
+};
+
+const Cell H_FREE_CELL = 
 {
     .type = FREE,
     .action = default_action
@@ -32,11 +38,11 @@ void read_parameters(Options *options, const char *parameters[], int n)
 {
     Options DEFAULT_OPTIONS = 
     {
-    .cells_B_number = CELLS_B_NUMBER,
-    .cells_T_number = CELLS_T_NUMBER,
-    .grid_size = GRID_SIZE,
-    .ag_number = AG_NUMBER,
-    .total_number_cells = CELLS_B_NUMBER + CELLS_T_NUMBER + AG_NUMBER
+        .total_number_cells = CELLS_B_NUMBER + CELLS_T_NUMBER + AG_NUMBER,
+        .cells_B_number = CELLS_B_NUMBER,
+        .cells_T_number = CELLS_T_NUMBER,
+        .ag_number = AG_NUMBER,
+        .grid_size = GRID_SIZE
     };
 
     //Setting simulation options to default.
@@ -70,9 +76,9 @@ void generation(Grid *grid, Options options)
             /**
              * Extracting type of the current position and creating a cell in it.
              */
-            Vector position = {i, j};
+            Vector position = {(float) i, (float) j};
             Type type = extract_type(options);
-            create_cell(access_grid(grid, position), position, type);
+            create_cell(host_access_grid(grid, position), position, type);
         }
     }
 }
@@ -111,36 +117,35 @@ Type extract_type(Options options)
     return type;
 }
 
-void swap_grids(Grid *old_grid, Grid *new_grid, int size)
+__global__ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
 {
     Cell *old_cell, *new_cell;
-    for (int i = 0; i < size; i++)
+    int x = blockDim.x * blockIdx.x + threadIdx.x;
+    int y = blockDim.y * blockIdx.y + threadIdx.y;
+    if (x < size && y < size)
     {
-        for (int j = 0; j < size; j++)
-        {
-            Vector position = {i, j};
-            old_cell = access_grid(old_grid, position);
-            new_cell = access_grid(new_grid, position);
-            *old_cell = *new_cell;
-            *new_cell = FREE_CELL;
-        }
+        Vector position = {(float) x, (float) y};
+        old_cell = device_access_grid(old_grid, position);
+        new_cell = device_access_grid(new_grid, position);
+        *old_cell = *new_cell;
+        *new_cell = D_FREE_CELL;
     }
 }
 
-void free_grid(Grid* grid)
+__host__ void free_grid(Grid* grid)
 {
     for (int i = 0; i < grid->size; i++)
     {
         for (int j = 0; j < grid->size; j++)
         {
-            Vector position = {i, j};
-            Cell* cell = access_grid(grid, position);
-            *cell = FREE_CELL;
+            Vector position = {(float) i, (float) j};
+            Cell* cell = host_access_grid(grid, position);
+            *cell = H_FREE_CELL;
         }
     }
 }
 
-void save_grid(Grid* grid, char *filename)
+__host__ void save_grid(Grid* grid, const char* filename)
 {
     FILE* out = fopen(filename, "w");
 
@@ -157,8 +162,8 @@ void save_grid(Grid* grid, char *filename)
     {
         for (int j = 0; j < grid->size; j++)
         {
-            Vector position = {i, j};
-            Cell cell = *access_grid(grid, position);
+            Vector position = {(float) i, (float) j};
+            Cell cell = *host_access_grid(grid, position);
             if (cell.type != FREE)
             {
                 fprintf
@@ -177,7 +182,7 @@ void save_grid(Grid* grid, char *filename)
     fclose(out);
 }
 
-void insert_antigens(Grid *grid)
+__host__ void insert_antigens(Grid *grid)
 {
     int step = grid->size / 10;
     int inserted = 0;
@@ -191,9 +196,9 @@ void insert_antigens(Grid *grid)
                  * Checking if current position is free, in that case insert an antigen.
                  * If the number of new antigen is already reached, then return.
                  */
-                Vector position = {i, j};
+                Vector position = {(float) i, (float) j};
                 correct_position(&position, grid->size);
-                Cell* cell = access_grid(grid, position);
+                Cell* cell = host_access_grid(grid, position);
                 if (cell->type == FREE)
                 {
                     create_cell(cell, position, Ag);

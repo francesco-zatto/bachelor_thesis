@@ -2,7 +2,7 @@
 
 #include "functions.h"
 
-inline Cell* access_grid(Grid* grid, Vector position)
+__host__ inline Cell* host_access_grid(Grid* grid, Vector position)
 {
     /**
      * Because of the choice of using a single array grid, accessing it is way much more complicated,
@@ -11,7 +11,15 @@ inline Cell* access_grid(Grid* grid, Vector position)
     return &grid->matrix[(int)position.x * grid->size + (int)(position).y];
 }
 
-void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
+__device__ inline Cell* device_access_grid(Grid* grid, Vector position)
+{
+    /**
+     * Same as host_access_grid function, but in device memory
+     */
+    return &grid->matrix[(int)position.x * grid->size + (int)(position).y];
+}
+
+__device__ void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
 {
     switch (b->status)
     {
@@ -36,12 +44,12 @@ void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
     }
 }
 
-void default_action(Cell *cell, Grid *old_grid, Grid *new_grid)
+__device__ void default_action(Cell *cell, Grid *old_grid, Grid *new_grid)
 {
     //Empty action for entities with any particular action to do.
 }
 
-void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
+__device__ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -57,7 +65,7 @@ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j 
             };
             correct_position(&current_position, old_grid->size);
-            Cell* other = access_grid(old_grid, current_position);
+            Cell* other = device_access_grid(old_grid, current_position);
             if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
@@ -67,22 +75,22 @@ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
     }
 }
 
-bool is_matching_antigen(Cell cell, Cell other) 
+__device__ bool is_matching_antigen(Cell cell, Cell other) 
 {
     //Hamming distance of the two receptors has to be greater or equal than the threshold.
     return other.type == Ag && hamming_distance(cell.receptor, other.receptor) >= AFFINITY_MIN;
 }
 
-int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECEPTOR_SIZE])
+__device__ int hamming_distance(unsigned char receptor_cell[RECEPTOR_SIZE], unsigned char receptor_other[RECEPTOR_SIZE])
 {
     int distance = 0;
-    char xor[RECEPTOR_SIZE];
+    char xor_receptor[RECEPTOR_SIZE] = {0};
     /**
      * Computing xor between every char of the two receptors' arrays.
      */
     for (int i = 0; i < RECEPTOR_SIZE; i++)
     {
-        xor[i] = (receptor_cell[i] ^ receptor_other[i]);
+        xor_receptor[i] = (receptor_cell[i] ^ receptor_other[i]);
     }
     /**
      * Computing the hamming distance as the number of the bit set to 1.
@@ -91,13 +99,13 @@ int hamming_distance(char receptor_cell[RECEPTOR_SIZE], char receptor_other[RECE
     {
         for (int j = 0; j < 8; j++)
         {
-            distance += (xor[i] >> j) & 0x1;
+            distance += (xor_receptor[i] >> j) & 0x1;
         }
     }
     return distance;
 }
 
-void correct_position(Vector* position, int size) 
+__device__ void correct_position(Vector* position, int size) 
 {
     if (position->x >= size)
     {
@@ -117,7 +125,7 @@ void correct_position(Vector* position, int size)
     }
 }
 
-void find_antigen(Cell* cell, Cell* other)
+__device__ void find_antigen(Cell* cell, Cell* other)
 {
     switch (cell->type)
     {
@@ -136,7 +144,7 @@ void find_antigen(Cell* cell, Cell* other)
     }
 }
 
-void search_lympho_T(Cell* b, Grid* old_grid)
+__device__ void search_lympho_T(Cell* b, Grid* old_grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -152,7 +160,7 @@ void search_lympho_T(Cell* b, Grid* old_grid)
                 .y = b->position.y + j 
             };
             correct_position(&current_position, old_grid->size);
-            Cell* other = access_grid(old_grid, current_position);
+            Cell* other = device_access_grid(old_grid, current_position);
             if (other->type == T)
             {
                 b->status = OPERATIVE;
@@ -162,7 +170,7 @@ void search_lympho_T(Cell* b, Grid* old_grid)
     }
 }
 
-void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
+__device__ void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     bool duplicated = false;
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && !duplicated; i++)
@@ -179,7 +187,7 @@ void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = access_grid(new_grid, new_position);
+            Cell* free_cell = device_access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_duplicate(*cell, free_cell, new_position);
@@ -190,7 +198,7 @@ void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
     }
 }
 
-void create_duplicate(Cell old_cell, Cell* duplicate, Vector position)
+__device__ void create_duplicate(Cell old_cell, Cell* duplicate, Vector position)
 {
     duplicate->action = old_cell.action;
     duplicate->type = old_cell.type;
@@ -201,7 +209,7 @@ void create_duplicate(Cell old_cell, Cell* duplicate, Vector position)
     copy_receptor(duplicate->receptor, old_cell.receptor);
 }
 
-void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_receptor[RECEPTOR_SIZE])
+__device__ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_receptor[RECEPTOR_SIZE])
 {
     for (int i = 0; i < RECEPTOR_SIZE; i++)
     {
@@ -209,7 +217,7 @@ void copy_receptor(unsigned char new_receptor[RECEPTOR_SIZE], unsigned char old_
     }
 }
 
-void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
+__device__ void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
 {
     int created = 0;
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE && created < NUMBER_CREATED_ANTIGENS; i++)
@@ -225,7 +233,7 @@ void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = access_grid(new_grid, new_position);
+            Cell* free_cell = device_access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_antibody(*cell, free_cell, new_position);
@@ -235,7 +243,7 @@ void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
     }
 }
 
-void create_antibody(Cell B_cell, Cell* antibody, Vector position)
+__device__ void create_antibody(Cell B_cell, Cell* antibody, Vector position)
 {
     antibody->action = search_antigens;
     antibody->type = Ab;

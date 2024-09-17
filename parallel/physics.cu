@@ -1,5 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
+#include <curand.h>
+#include <curand_kernel.h>
 
 #include "physics.h"
 #include "functions.h"
@@ -10,7 +12,7 @@
  * @param grid grid where the search is taken
  * @param return free cell near start
  */
-static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
+__device__ static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
 {
     for (int i = -PROXIMITY_DISTANCE; i <= PROXIMITY_DISTANCE; i++)
     {
@@ -21,7 +23,7 @@ static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
              */
             Vector position = {start->position.x + i, start->position.y + j};
             correct_position(&position, grid->size);
-            Cell* cell = access_grid(grid, position);
+            Cell* cell = device_access_grid(grid, position);
             if (cell->type == FREE)
             {
                 return cell;
@@ -31,7 +33,7 @@ static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
     return start;
 }
 
-void movement(Cell *cell, Grid *new_grid)
+__device__ void movement(Cell *cell, Grid *new_grid, curandState* rand_state)
 {
     //If cell is free, ignore it.
     if (cell->type == FREE)
@@ -41,8 +43,8 @@ void movement(Cell *cell, Grid *new_grid)
      * Computing box muller numbers for forces felt by the body and getting body mass.
      */
     float box_muller_number[2];
-    box_muller(box_muller_number);
-    double mass = get_mass(cell->type);
+    box_muller(box_muller_number, rand_state);
+    float mass = get_mass(cell->type);
 
     /**
      * Computing deltaV with Langevin equation and then updating cell's position and velocity.
@@ -61,20 +63,20 @@ void movement(Cell *cell, Grid *new_grid)
      * Checking if the computed position is inside the grid and if it is free.
      */
     correct_position(&(cell->position), new_grid->size);
-    Cell* new = access_grid(new_grid, cell->position);
-    if (new->type != FREE)
+    Cell* new_cell = device_access_grid(new_grid, cell->position);
+    if (new_cell->type != FREE)
     {
-        new = find_free_cell_nearby(new, new_grid);
+        new_cell = find_free_cell_nearby(new_cell, new_grid);
     }
-    *new = *cell;
+    *new_cell = *cell;
 }
 
-double inline langevin_equation(double velocity, double collision_forces, double mass)
+__device__ float inline langevin_equation(float velocity, float collision_forces, float mass)
 {
     return (-LAMBDA * velocity + collision_forces) / mass * TIMESTEP;
 }
 
-double inline get_mass(Type type)
+__device__ float inline get_mass(Type type)
 {
     //Lymphocytes cells have a much higher mass than antigens and antibodies.
     switch (type)
@@ -88,11 +90,11 @@ double inline get_mass(Type type)
     }
 }
 
-void box_muller(float box_muller_number[2])
+__device__ void box_muller(float box_muller_number[2], curandState* rand_state)
 {
     float 
-        u1 = (float)rand()/(float)(RAND_MAX),
-        u2 = (float)rand()/(float)(RAND_MAX);
+        u1 = (float)(curand(rand_state)) / (float)(RAND_MAX),
+        u2 = (float)(curand(rand_state)) / (float)(RAND_MAX);
     box_muller_number[0] = sqrt(-2 * log(u1)) * cos(2 * PI * u2);
     box_muller_number[1] = sqrt(-2 * log(u1)) * sin(2 * PI * u2);
 }

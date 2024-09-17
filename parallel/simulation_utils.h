@@ -80,7 +80,7 @@ Type extract_type(Options options);
  * @param new_grid new grid of the next timestep
  * @param size grid's side length
  */
-void swap_grids(Grid* old_grid, Grid* new_grid, int size);
+__global__ void swap_grids(Grid* old_grid, Grid* new_grid, int size);
 
 /**
  * Function to fill a grid with only free cells. It does not deallocate grid memory.
@@ -93,7 +93,7 @@ void free_grid(Grid* grid);
  * @param grid grid to save in external file
  * @param filename name of the file
  */
-void save_grid(Grid* grid, char* filename);
+void save_grid(Grid* grid, const char* filename);
 
 /**
  * Function to insert new antigens in the simulation's grid to test HIS memory.
