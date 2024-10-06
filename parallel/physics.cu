@@ -23,7 +23,7 @@ __device__ static Cell* find_free_cell_nearby(Cell* start, Grid* grid)
              */
             Vector position = {start->position.x + i, start->position.y + j};
             correct_position(&position, grid->size);
-            Cell* cell = device_access_grid(grid, position);
+            Cell* cell = NULL; //device_access_grid(grid, position);
             if (cell->type == FREE)
             {
                 return cell;
@@ -63,7 +63,7 @@ __device__ void movement(Cell *cell, Grid *new_grid, curandState* rand_state)
      * Checking if the computed position is inside the grid and if it is free.
      */
     correct_position(&(cell->position), new_grid->size);
-    Cell* new_cell = device_access_grid(new_grid, cell->position);
+    Cell* new_cell = NULL; //device_access_grid(new_grid, cell->position);
     if (new_cell->type != FREE)
     {
         new_cell = find_free_cell_nearby(new_cell, new_grid);

@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "sequential/functions.h"
 #include "sequential/physics.h"
 #include "sequential/simulation_utils.h"
+
+#define WALLTIME(t) ((double)(t).tv_sec + 1e-6 * (double)(t).tv_usec)
 
 /**
  * Actual simulation function that for n timesteps updates cells in the grid.
@@ -52,6 +55,8 @@ int main(int argc, char const *argv[])
     grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size),
     next_grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size);
     
+    struct timeval t_start, t_end;
+
     /**
      * Placing the cells and antigens in the grid and placing only free cells in the next iteration grid.
      */
@@ -59,18 +64,22 @@ int main(int argc, char const *argv[])
     free_grid(&next_grid);
 
     //Save cells at the start in a file
-    save_grid(&grid, "grids/start.csv");
+    //save_grid(&grid, "grids/sequential/start.csv");
 
+    gettimeofday ( &t_start, NULL );
     simulation(&grid, &next_grid, options);
 
     //Save cells in the middle of the simulation, before inserting new antigens.
-    save_grid(&grid, "grids/mid.csv");
+    //save_grid(&grid, "grids/sequential/mid.csv");
     insert_antigens(&grid);
 
     simulation(&grid, &next_grid, options);
 
+    gettimeofday ( &t_end, NULL );
+    printf("T: %lf\n", WALLTIME(t_end) - WALLTIME(t_start));
+
     //Save cells at the end in a file
-    save_grid(&grid, "grids/end.csv");
+    //save_grid(&grid, "grids/sequential/end.csv");
 
     free(grid.matrix);
     free(next_grid.matrix);

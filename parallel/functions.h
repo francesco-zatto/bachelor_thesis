@@ -29,7 +29,7 @@ __host__ Cell* host_access_grid(Grid* grid, Vector position);
  * @param position position (x, y) of the requested cell
  * @returns a pointer to a cell
  */
-__device__ Cell* device_access_grid(Grid* grid, Vector position);
+//__device__ Cell* device_access_grid(Grid* grid, Vector position);
 
 /**
  * It creates a duplicate in a certain position of a given B lymphocyte.

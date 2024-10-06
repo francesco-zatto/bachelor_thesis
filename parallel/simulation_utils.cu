@@ -34,7 +34,7 @@ const int AG_NUMBER = 2000;
 
 const int NEW_AG_NUMBER = 8000;
 
-void read_parameters(Options *options, const char *parameters[], int n)
+__host__ void read_parameters(Options *options, const char *parameters[], int n)
 {
     Options DEFAULT_OPTIONS = 
     {
@@ -67,7 +67,7 @@ void read_parameters(Options *options, const char *parameters[], int n)
     assert(options->grid_size > sqrt(options->total_number_cells));
 }
 
-void generation(Grid *grid, Options options)
+__host__ void generation(Grid *grid, Options options)
 {
     for (int i = 0; i < grid->size; i++) 
     {
@@ -83,7 +83,7 @@ void generation(Grid *grid, Options options)
     }
 }
 
-void create_cell(Cell *cell, Vector position, Type type)
+__host__ void create_cell(Cell *cell, Vector position, Type type)
 {
     cell->position = position;
     cell->velocity = NULL_VECTOR;
@@ -98,7 +98,7 @@ void create_cell(Cell *cell, Vector position, Type type)
             : (cell->type == Ab ? search_antigens : default_action);
 }
 
-Type extract_type(Options options)
+__host__ Type extract_type(Options options)
 {
     /**
      * It chooses a type as a number in [0, size * size).
@@ -125,8 +125,8 @@ __global__ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
     if (x < size && y < size)
     {
         Vector position = {(float) x, (float) y};
-        old_cell = device_access_grid(old_grid, position);
-        new_cell = device_access_grid(new_grid, position);
+        old_cell = NULL; //device_access_grid(old_grid, position);
+        new_cell = NULL; //device_access_grid(new_grid, position);
         *old_cell = *new_cell;
         *new_cell = D_FREE_CELL;
     }

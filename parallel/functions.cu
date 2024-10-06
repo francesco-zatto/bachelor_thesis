@@ -65,7 +65,7 @@ __device__ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j 
             };
             correct_position(&current_position, old_grid->size);
-            Cell* other = device_access_grid(old_grid, current_position);
+            Cell* other = NULL; //device_access_grid(old_grid, current_position);
             if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
@@ -160,7 +160,7 @@ __device__ void search_lympho_T(Cell* b, Grid* old_grid)
                 .y = b->position.y + j 
             };
             correct_position(&current_position, old_grid->size);
-            Cell* other = device_access_grid(old_grid, current_position);
+            Cell* other = NULL; //device_access_grid(old_grid, current_position);
             if (other->type == T)
             {
                 b->status = OPERATIVE;
@@ -187,7 +187,7 @@ __device__ void duplicate(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = device_access_grid(new_grid, new_position);
+            Cell* free_cell = NULL; //device_access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_duplicate(*cell, free_cell, new_position);
@@ -233,7 +233,7 @@ __device__ void create_antibodies(Cell* cell, Grid* old_grid, Grid* new_grid)
                 .y = cell->position.y + j
             };
             correct_position(&new_position, old_grid->size);
-            Cell* free_cell = device_access_grid(new_grid, new_position);
+            Cell* free_cell = NULL; device_access_grid(new_grid, new_position);
             if (free_cell->type == FREE)
             {
                 create_antibody(*cell, free_cell, new_position);

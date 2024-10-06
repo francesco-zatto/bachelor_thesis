@@ -8,7 +8,7 @@ inline Cell* access_grid(Grid* grid, Vector position)
      * Because of the choice of using a single array grid, accessing it is way much more complicated,
      * but next line has the same meaning of &matrix[position.x][position.y] for a multi-array grid.
      */
-    return &grid->matrix[(int)position.x * grid->size + (int)(position).y];
+    return &grid->matrix[(int)position.x * grid->size + (int)position.y];
 }
 
 void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
@@ -58,7 +58,7 @@ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
             };
             correct_position(&current_position, old_grid->size);
             Cell* other = access_grid(old_grid, current_position);
-            if (is_matching_antigen(*cell, *other))
+            if (is_matching_antigen(*cell, *cell))
             {
                 find_antigen(cell, other);
                 return;
