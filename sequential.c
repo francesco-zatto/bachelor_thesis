@@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
     grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size),
     next_grid.matrix = (Cell*)malloc(sizeof(Cell) * options.grid_size * options.grid_size);
     
-    struct timeval t_start, t_end;
+    struct timeval t_start_1, t_end_1, t_start_2, t_end_2;
 
     /**
      * Placing the cells and antigens in the grid and placing only free cells in the next iteration grid.
@@ -66,17 +66,19 @@ int main(int argc, char const *argv[])
     //Save cells at the start in a file
     //save_grid(&grid, "grids/sequential/start.csv");
 
-    gettimeofday ( &t_start, NULL );
+    gettimeofday(&t_start_1, NULL);
     simulation(&grid, &next_grid, options);
+    gettimeofday(&t_end_1, NULL);
 
     //Save cells in the middle of the simulation, before inserting new antigens.
     //save_grid(&grid, "grids/sequential/mid.csv");
     insert_antigens(&grid);
 
+    gettimeofday(&t_start_2, NULL);
     simulation(&grid, &next_grid, options);
+    gettimeofday(&t_end_2, NULL);
 
-    gettimeofday ( &t_end, NULL );
-    printf("T: %lf\n", WALLTIME(t_end) - WALLTIME(t_start));
+    printf("T: %lf\n", (WALLTIME(t_end_1) - WALLTIME(t_start_1)) + (WALLTIME(t_end_2) - WALLTIME(t_start_2)));
 
     //Save cells at the end in a file
     //save_grid(&grid, "grids/sequential/end.csv");
