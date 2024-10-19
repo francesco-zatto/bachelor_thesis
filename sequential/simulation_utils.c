@@ -125,6 +125,9 @@ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
             Vector position = {i, j};
             old_cell = access_grid(old_grid, position);
             new_cell = access_grid(new_grid, position);
+            *old_cell = *new_cell;
+            *new_cell = FREE_CELL;
+            /*
             old_cell->type = new_cell->type;
             old_cell->position = new_cell->position;
             old_cell->velocity = new_cell->velocity;
@@ -137,6 +140,7 @@ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
             copy_receptor(new_cell->receptor, (unsigned char[2]) {0, 0});
             new_cell->status = INACTIVE;
             new_cell->action = default_action;
+            */
         }
     }
 }
@@ -149,12 +153,15 @@ void free_grid(Grid* grid)
         {
             Vector position = {i, j};
             Cell* cell = access_grid(grid, position);
+            *cell = FREE_CELL;
+            /*
             cell->type = FREE;
             cell->position = position;
             cell->velocity = NULL_VECTOR;
             copy_receptor(cell->receptor, (unsigned char[2]) {0, 0});
             cell->status = INACTIVE;
             cell->action = default_action;
+            */
         }
     }
 }

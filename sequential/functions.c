@@ -58,7 +58,7 @@ void search_antigens(Cell* cell, Grid* old_grid, Grid* new_grid)
             };
             correct_position(&current_position, old_grid->size);
             Cell* other = access_grid(old_grid, current_position);
-            if (is_matching_antigen(*cell, *cell))
+            if (is_matching_antigen(*cell, *other))
             {
                 find_antigen(cell, other);
                 return;
