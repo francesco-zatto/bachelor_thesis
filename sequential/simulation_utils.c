@@ -20,7 +20,7 @@ const Cell FREE_CELL =
     .action = default_action
 };
 
-const int TIMESTEPS = 30;
+const int TIMESTEPS = 50;
 
 const int GRID_SIZE = 500;
 
@@ -30,7 +30,7 @@ const int CELLS_T_NUMBER = 200;
 
 const int AG_NUMBER = 2000;
 
-const int NEW_AG_NUMBER = 8000;
+const int NEW_AG_NUMBER = 2000;
 
 void read_parameters(Options *options, const char *parameters[], int n)
 {

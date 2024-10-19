@@ -64,14 +64,14 @@ int main(int argc, char const *argv[])
     free_grid(&next_grid);
 
     //Save cells at the start in a file
-    //save_grid(&grid, "grids/sequential/start.csv");
+    save_grid(&grid, "grids/sequential/start.csv");
 
     gettimeofday(&t_start_1, NULL);
     simulation(&grid, &next_grid, options);
     gettimeofday(&t_end_1, NULL);
 
     //Save cells in the middle of the simulation, before inserting new antigens.
-    //save_grid(&grid, "grids/sequential/mid.csv");
+    save_grid(&grid, "grids/sequential/mid.csv");
     insert_antigens(&grid);
 
     gettimeofday(&t_start_2, NULL);
@@ -81,7 +81,7 @@ int main(int argc, char const *argv[])
     printf("T: %lf\n", (WALLTIME(t_end_1) - WALLTIME(t_start_1)) + (WALLTIME(t_end_2) - WALLTIME(t_start_2)));
 
     //Save cells at the end in a file
-    //save_grid(&grid, "grids/sequential/end.csv");
+    save_grid(&grid, "grids/sequential/end.csv");
 
     free(grid.matrix);
     free(next_grid.matrix);
