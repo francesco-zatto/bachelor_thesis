@@ -66,3 +66,10 @@ make sequential
 ```
 
 ### Parallel program
+For the parallel implementation the nvcc compiler is required and only in that case it is possible to compile it using the comand:
+```
+make parallel
+```
+
+### Timing tests
+Inside the main folder of the repository, there are two bash scripts, `sequential_tests.sh` and `parallel_tests.sh`, that compile and run different tests using different input parameters of the two versions. The results of the tests, only the execution time of the simulation, is saved in two csv files inside the results folder, `seq_tests.csv` and `parallel_tests.csv`, and then they're used to compare and plot timings with `plot_results.ipynb`.
