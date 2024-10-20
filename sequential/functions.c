@@ -25,6 +25,7 @@ void lympho_B_action(Cell* b, Grid* old_grid, Grid* new_grid)
         case ACTIVE:
         {
             search_lympho_T(b, old_grid);
+            break;
         }
         //If operative, it duplicates itself and create antibodies.
         case OPERATIVE:
