@@ -127,20 +127,6 @@ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
             new_cell = access_grid(new_grid, position);
             *old_cell = *new_cell;
             *new_cell = FREE_CELL;
-            /*
-            old_cell->type = new_cell->type;
-            old_cell->position = new_cell->position;
-            old_cell->velocity = new_cell->velocity;
-            copy_receptor(old_cell->receptor, new_cell->receptor);
-            old_cell->status = new_cell->status;
-            old_cell->action = new_cell->action;
-            new_cell->type = FREE;
-            new_cell->position = position;
-            new_cell->velocity = NULL_VECTOR;
-            copy_receptor(new_cell->receptor, (unsigned char[2]) {0, 0});
-            new_cell->status = INACTIVE;
-            new_cell->action = default_action;
-            */
         }
     }
 }
@@ -154,14 +140,6 @@ void free_grid(Grid* grid)
             Vector position = {i, j};
             Cell* cell = access_grid(grid, position);
             *cell = FREE_CELL;
-            /*
-            cell->type = FREE;
-            cell->position = position;
-            cell->velocity = NULL_VECTOR;
-            copy_receptor(cell->receptor, (unsigned char[2]) {0, 0});
-            cell->status = INACTIVE;
-            cell->action = default_action;
-            */
         }
     }
 }
@@ -169,6 +147,12 @@ void free_grid(Grid* grid)
 void save_grid(Grid* grid, char *filename)
 {
     FILE* out = fopen(filename, "w");
+
+    if (!out)
+    {
+        printf("Error in opening %s file!\n", filename);
+        return;
+    }
 
     //Header of the csv file
     fprintf(out, "Type;Pos_x;Pos_y;Vel_x;Vel_y;");

@@ -69,7 +69,6 @@ void movement(Cell *cell, Grid *new_grid)
     new->position = cell->position;
     new->velocity = cell->velocity;
     new->status = cell->status;
-    //printf("%d\t%d\n", new->type, cell->type);
     new->type = cell->type;
     new->action = cell->action;
     copy_receptor(new->receptor, cell->receptor);
