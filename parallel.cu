@@ -721,7 +721,7 @@ void device_free_grid(Cell* grid, int subgrid_size, int grid_size, Vector start_
     {
         Vector position = {start_position.x + (float) x, start_position.y + (float) y};
         Cell* cell = device_access_grid(grid, position, grid_size);
-	cell->type = FREE;
+	    cell->type = FREE;
         cell->position.x = 0;
         cell->velocity.x = 0;
         cell->position.y = 0;
