@@ -1,4 +1,4 @@
-parallel: parallel.cu cuda_cell.h parallel.h
+compile-parallel: parallel.cu cuda_cell.h parallel.h
 	-mkdir exe
 	nvcc parallel.cu -o parallel.o -dc
 	nvcc parallel.o -o exe/parallel -lm
@@ -7,7 +7,7 @@ parallel: parallel.cu cuda_cell.h parallel.h
 run-parallel: exe/parallel
 	./exe/parallel
 
-sequential: sequential.c sequential/functions.c cell.h sequential/functions.h
+compile-sequential: sequential.c sequential/functions.c cell.h sequential/functions.h
 	-mkdir exe
 	gcc sequential.c sequential/functions.c sequential/simulation_utils.c sequential/physics.c -o exe/sequential -lm
 

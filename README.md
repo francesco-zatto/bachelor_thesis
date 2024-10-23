@@ -62,13 +62,13 @@ There are two ways to draw the brownian movement:
 ### Sequential program
 In the sequential program the whole simulation will be ran without any piece of parallel code, so no CUDA at all. To compile it just run the following comand:
 ```
-make sequential
+make compile-sequential
 ```
 
 ### Parallel program
 For the parallel implementation the nvcc compiler is required and only in that case it is possible to compile it using the comand:
 ```
-make parallel
+make compile-parallel
 ```
 
 ### Timing tests

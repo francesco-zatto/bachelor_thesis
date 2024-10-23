@@ -1,3 +1,32 @@
+/******************************************************************************
+
+     MIT License
+
+    Copyright (c) 2024 Francesco Zattoni
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the "Software"), to deal in the Software without
+    restriction, including without limitation the rights to use,
+    copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.
+
+*********************************************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -64,14 +93,14 @@ int main(int argc, char const *argv[])
     free_grid(&next_grid);
 
     //Save cells at the start in a file
-    save_grid(&grid, "./grids/sequential/start.csv");
+    save_grid(&grid, "start.csv");
 
     gettimeofday(&t_start_1, NULL);
     simulation(&grid, &next_grid, options);
     gettimeofday(&t_end_1, NULL);
 
     //Save cells in the middle of the simulation, before inserting new antigens.
-    save_grid(&grid, "./grids/sequential/mid.csv");
+    save_grid(&grid, "mid.csv");
     insert_antigens(&grid);
 
     gettimeofday(&t_start_2, NULL);
@@ -81,7 +110,7 @@ int main(int argc, char const *argv[])
     printf("T: %lf\n", (WALLTIME(t_end_1) - WALLTIME(t_start_1)) + (WALLTIME(t_end_2) - WALLTIME(t_start_2)));
 
     //Save cells at the end in a file
-    save_grid(&grid, "./grids/sequential/end.csv");
+    save_grid(&grid, "end.csv");
 
     free(grid.matrix);
     free(next_grid.matrix);
