@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "physics.h"
 #include "functions.h"
@@ -119,6 +120,8 @@ double inline get_mass(Type type)
     case Ag:
     case Ab:
         return 0.01;
+    default:
+        assert(type == B || type == T || type == Ag || type == Ab);
     }
 }
 

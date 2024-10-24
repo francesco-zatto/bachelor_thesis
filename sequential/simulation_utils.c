@@ -160,7 +160,7 @@ void swap_grids(Grid *old_grid, Grid *new_grid, int size)
     }
 }
 
-void free_grid(Grid* grid)
+void clear_grid(Grid* grid)
 {
     for (int i = 0; i < grid->size; i++)
     {

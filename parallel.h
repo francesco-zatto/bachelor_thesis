@@ -288,7 +288,7 @@ __global__ void swap_grids(Grid* old_grid, Grid* new_grid, int size);
  * Function to fill a grid with only free cells. It does not deallocate grid memory.
  * @param grid output grid that will contain only free cells
  */
-__host__ void free_grid(Grid* grid);
+__host__ void clear_grid(Grid* grid);
 
 /**
  * Function to save every information about the cells inside the given grid in the current state

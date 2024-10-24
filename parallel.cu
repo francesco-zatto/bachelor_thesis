@@ -222,6 +222,8 @@ float inline get_mass(Type type)
     case Ag:
     case Ab:
         return 0.01;
+    default:
+        assert(type == B || type == T || type == Ag || type == Ab);
     }
 }
 
@@ -624,7 +626,7 @@ void swap_grids(Cell *old_grid, Cell *new_grid, int sub_grid_size, int grid_size
 }
 
 __host__
-void free_grid(Grid* grid)
+void clear_grid(Grid* grid)
 {
     for (int i = 0; i < grid->size; i++)
     {
@@ -742,7 +744,7 @@ void timestep(Cell* grid, Cell* next_grid, curandState* rand_state, int size)
 }
 
 __global__
-void device_free_grid(Cell* grid, int subgrid_size, int grid_size, Vector start_position)
+void device_clear_grid(Cell* grid, int subgrid_size, int grid_size, Vector start_position)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int y = blockDim.y * blockIdx.y + threadIdx.y;
@@ -808,7 +810,7 @@ void simulation(Cell* grid, Cell* next_grid, Options options)
 	next_grid = grid;
 	grid = temp;
 	Vector start = {0, 0};
-	device_free_grid<<<number_blocks, thread_per_block>>>(next_grid, options.grid_size, options.grid_size, start);
+	device_clear_grid<<<number_blocks, thread_per_block>>>(next_grid, options.grid_size, options.grid_size, start);
 	cudaDeviceSynchronize();
     }
 
@@ -843,7 +845,7 @@ int main(int argc, char const *argv[])
      * Placing the cells and antigens in the grid and placing only free cells in the next iteration grid.
      */
     generation(&h_grid, options);
-    free_grid(&h_next_grid);
+    clear_grid(&h_next_grid);
     cudaMemcpy((void*) d_grid.matrix, (void*) h_grid.matrix, malloc_size, cudaMemcpyHostToDevice);
     cudaMemcpy((void*) d_next_grid.matrix, (void*) h_next_grid.matrix, malloc_size, cudaMemcpyHostToDevice);
 

@@ -90,7 +90,7 @@ int main(int argc, char const *argv[])
      * Placing the cells and antigens in the grid and placing only free cells in the next iteration grid.
      */
     generation(&grid, options);
-    free_grid(&next_grid);
+    clear_grid(&next_grid);
 
     //Save cells at the start in a file
     save_grid(&grid, "start.csv");
